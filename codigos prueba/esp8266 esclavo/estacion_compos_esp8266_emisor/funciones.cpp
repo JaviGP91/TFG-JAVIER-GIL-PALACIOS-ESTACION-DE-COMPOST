@@ -82,12 +82,13 @@ void printAddress(DeviceAddress deviceAddress){
   //delay(1000);
 }
 
-float  pedir_humedad(){
-//declaración de pines
-const int analogInPin = A0;  // ESP8266 Analog Pin ADC0 = A0
+float  pedir_humedad()
+{
+  //declaración de pines
+  const int analogInPin = A0;  // ESP8266 Analog Pin ADC0 = A0
 
-//inicialización de pines
-float sensorValue = 0;  // Inicializar valor de lectura analógica
+  //inicialización de pines
+  float sensorValue = 0;  // Inicializar valor de lectura analógica
 
   
   /*calibración sensor de humedad*/
@@ -95,18 +96,18 @@ float sensorValue = 0;  // Inicializar valor de lectura analógica
   float ValorHumedadMaxima=375; // Registre el valor del sensor cuando la sonda esté expuesta al agua como "ValorHumedadMaxima". Este es el valor límite del suelo húmedo "Humedad: 100% HR"
   float HUM_RANGO (ValorHumedadMinima - ValorHumedadMaxima);
 
-delay(5000);
-// lectura de sensor humedad
+ delay(900);
+  // lectura de sensor humedad
   sensorValue = analogRead(analogInPin);
   float porcentaje_humedad = 100 * (1 - (sensorValue - ValorHumedadMaxima) / HUM_RANGO);
  
-// Imprimir medida por el monitor de l puerto serie
-//  Serial.print("sensor humedad = ");
-//  Serial.print(sensorValue);
-//  Serial.print('\n');
+  // Imprimir medida por el monitor de l puerto serie
+  //  Serial.print("sensor humedad = ");
+  //  Serial.print(sensorValue);
+  //  Serial.print('\n');
   Serial.print("sensor humedad RH% = ");
   Serial.print(porcentaje_humedad);
   Serial.print('\n');
   return porcentaje_humedad;
-//delay(1000);
+  
 }
