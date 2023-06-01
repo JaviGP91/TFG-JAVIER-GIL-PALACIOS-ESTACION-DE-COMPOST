@@ -1,17 +1,30 @@
-/*
+/*   Pasarela ESP-NOW <-> MQTT con auto emparejamiento
+ *    El dispositivo envía mensajes en JSON por ESPNOW (más un primer byte de control)
+ *    Los mensajes se publican en infind/espnow/<MAC>[/<TOPIC>]
+ *    Siendo MAC la dirección mac del dispositivo emisor y TOPIC opcionamente puede establecerse con la clave "topic" en el JSON
+ *   
+ *   Se pueden enviar mensajes a los dispositivos a través del topic infind/espnowdevice 
+ *   El mensaje de debe contener una cadena JSON, con las claves: mac, topic, payload
+ *   Siendo mac la dirección mac del dispositivo destino, topic una cadena que identifique el tipo de mensaje y payload el mensaje.
+ *   
+ *   Para arquitectura ESP32, y así poder comunicarse simultaneamente por ESPNOW y WiFi (mqtt).
+ * 
+ * Basado en el trabajo de:
   Rui Santos
   Complete project details at https://RandomNerdTutorials.com/?s=esp-now
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.
   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
   Based on JC Servaye example: https://github.com/Servayejc/esp_now_web_server/
 */
-#include <string>
+
+
 #include <esp_now.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <queue> 
 #include <list>
+#include <string>
 
 #include "AUTOpairing_common.h"
 
@@ -33,8 +46,7 @@ class TmensajeESP
 };
 
 //-------------------------------------------------------------
-// clase para manejar un mensaje MQTT 
-//
+// clase para manejar un mensaje MQTT
 class TmensajeMQTT
 {
   public:
@@ -53,10 +65,12 @@ class TmensajeMQTT
 
 // cola de mensajes esp-now recibidos
 std::queue<TmensajeESP> cola_mensajes;
-// lista de mensajes esp-now recibidos
+// cola de mensajes esp-now recibidos
 std::list<TmensajeMQTT> mensajes_MQTT;
-
+// cola de dispositivos (mac) esperando por sus mensajes
 std::queue<String> readyMACs;
+
+std::queue<String> pairMACs;
 
 WiFiClient wClient;
 PubSubClient mqtt_client(wClient);
@@ -70,19 +84,17 @@ char JSON_serie_bak[257];
 String deviceMac;
 
 const char* mqtt_server = "iot.ac.uma.es";
-//const char* mqtt_user = "tfg";
-//const char* mqtt_pass = "rLV6zQAuaqYAEyJN";
 const char* mqtt_user = "infind";
 const char* mqtt_pass = "zancudo";
 
 // Replace with your network credentials (STATION)
-const char* ssid = "sagemcom67E0_EXT";
-const char* password = "UWZKFTHRWZZTYY";
+const char* ssid = "infind";
+const char* password = "1518wifi";
 //const char* ssid = "tfgshuerta";
 //const char* password = "946CXQ2d*WHm";
 
 esp_now_peer_info_t slave;
-int chan; 
+int myChannel; 
 
 
 int counter = 0;
@@ -99,7 +111,6 @@ void conecta_wifi() {
     Serial.print(".");
   }
   Serial.printf("\nWiFi connected, IP address: %s\n", WiFi.localIP().toString().c_str());
-  //delay(2000)
 }
 
 //-----------------------------------------------------
@@ -134,14 +145,14 @@ bool addPeer(const uint8_t *peer_addr) {      // add pairing
   const esp_now_peer_info_t *peer = &slave;
   memcpy(slave.peer_addr, peer_addr, 6);
   
-  slave.channel = chan; // pick a channel
+  slave.channel = myChannel; // pick a channel
   slave.encrypt = 0; // no encryption
   // check if the peer exists
   bool exists = esp_now_is_peer_exist(slave.peer_addr);
   if (exists) {
     // Slave already paired.
     Serial.println("Already Paired");
-    return true;
+    return false;
   }
   else {
     esp_err_t addStatus = esp_now_add_peer(peer);
@@ -161,36 +172,40 @@ bool addPeer(const uint8_t *peer_addr) {      // add pairing
 //------------------------------------------------------------
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("Estado de envío del último paquete: ");
-  Serial.print(status == ESP_NOW_SEND_SUCCESS ? "Éxito de entrega a " : "Delivery Fail to ");
+  Serial.print("Last Packet Send Status: ");
+  Serial.print(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success to " : "Delivery Fail to ");
   printMAC(mac_addr);
   Serial.println();
 }
 
 //------------------------------------------------------------
 void OnDataRecv(const uint8_t * mac_addr, const uint8_t *incomingData, int len) { 
+  uint8_t type = incomingData[0];       // first message byte is the type of message 
   Serial.println();
-  Serial.print("ESPNOW: ");
+  Serial.print("received message type = ");
+  Serial.print(type,BIN);
+  Serial.println(messType2String(type));Serial.print("ESPNOW: ");
   Serial.print(len);
   Serial.print(" bytes of data received from : ");
   printMAC(mac_addr);
   Serial.println();
-  uint8_t type = incomingData[0];       // first message byte is the type of message 
-  Serial.printf("message type = "BYTE_TO_BINARY_PATTERN"\n", BYTE_TO_BINARY(type));
-  uint8_t check = (type >>7);
-  Serial.printf("check bit = %d\n",check);
-  if(check==1) 
+  
+  if(type & CHECK) 
   {
-   Serial.println("Device wants to get messages...");
+   Serial.println("Device wants to get messages (CHECK==1)...");
    readyMACs.push(byte2HEX((uint8_t*)mac_addr));
   }
  
-  switch (type & 0b00000011) {  // dos bits menos significativos
+  switch (type & MASK_MSG_TYPE) {  // dos bits menos significativos
 
   case DATA :                           // the message is data type
      // encola el mensaje para su envío por serie en loop()
      cola_mensajes.push(TmensajeESP((uint8_t *)mac_addr,(uint8_t *)incomingData+1, len-1));
-     addPeer(mac_addr);
+     if( addPeer(mac_addr))
+        {
+          Serial.println("New device paired");
+          pairMACs.push(byte2HEX((uint8_t*)mac_addr));
+        }
      // TEST respuesta
      /*    struct_espnow mensaje_esp;
        mensaje_esp.msgType=DATA;
@@ -207,16 +222,21 @@ void OnDataRecv(const uint8_t * mac_addr, const uint8_t *incomingData, int len) 
     Serial.print("Pairing request from: ");
     printMAC(mac_addr);
     Serial.println();
-    Serial.println(pairingData.channel);
-    if (pairingData.id > 0) {     // do not replay to server itself
+    if (pairingData.id != GATEWAY) {     // do not replay to server itself
       if (pairingData.msgType == PAIRING) { 
-        pairingData.id = 0;       // 0 is server
+        pairingData.id = GATEWAY;   
         // Server is in AP_STA mode: peers need to send data to server soft AP MAC address 
-        WiFi.softAPmacAddress(pairingData.macAddr);   
-        pairingData.channel = chan;
+        WiFi.softAPmacAddress(pairingData.macAddr);   // send my mac Address to pairing device
+        pairingData.channel = myChannel;
         Serial.println("send response");
-        addPeer(mac_addr);
+        if( addPeer(mac_addr))
+        {
+          Serial.println("New device paired");
+          pairMACs.push(byte2HEX((uint8_t*)mac_addr));
+        }
+         
         esp_err_t result = esp_now_send(mac_addr, (uint8_t *) &pairingData, sizeof(pairingData));
+
       }  
     }  
     break; 
@@ -294,7 +314,7 @@ void setup() {
  
   sprintf(ID_PLACA, "ESP_%d", ESP.getEfuseMac());
   conecta_wifi();
-  delay(5000);
+  
   Serial.print("Server MAC Address:  ");
   Serial.println(WiFi.macAddress());
 
@@ -307,7 +327,7 @@ void setup() {
   mqtt_client.setBufferSize(512); // para poder enviar mensajes de hasta X bytes
   mqtt_client.setCallback(procesa_mensaje);
 
-  chan = WiFi.channel();
+  myChannel = WiFi.channel();
   Serial.print("Station IP Address: ");
   Serial.println(WiFi.localIP());
   Serial.print("Wi-Fi Channel: ");
@@ -362,9 +382,20 @@ void loop() {
     }
     esp_err_t result = esp_now_send(mac_addr, (uint8_t *) &mensaje_esp, size);
   }
+
+  if (!pairMACs.empty())
+  {
+    uint8_t mac_addr[6];
+    uint8_t size;
+    String mac = pairMACs.front();
+    pairMACs.pop();
+    Serial.println("Enviando mensaje MQTT notificación pairing "+ mac);
+    sprintf(mensaje_mqtt, "{\"mac\":\"%s\"}",mac.c_str());
+    mqtt_client.publish("infind/espnowpairing", mensaje_mqtt);
+  }
   
   // envía todo lo que haya en la cola de mensajes pendientes
-  while (!cola_mensajes.empty())
+  if (!cola_mensajes.empty())
   {
     TmensajeESP mensaje = cola_mensajes.front();
     cola_mensajes.pop();
@@ -414,61 +445,8 @@ void loop() {
     mqtt_client.publish(topic_PUB, mensaje_mqtt);
    
     Serial.printf("Mensaje from: %s, publicado en MQTT\n", deviceMac.c_str());
-    Serial.printf("  topic: %s\n", topic_PUB);
-    Serial.printf("  payload: %s\n\n", mensaje_mqtt);
+    Serial.printf("       topic: %s\n", topic_PUB);
+    Serial.printf("     payload: %s\n\n", mensaje_mqtt);
 }
 
 }
-
- /*
-  * 
-  * 
-//-------------------------------------------------------------
-// clase para manejar suscripciones esp-now
-class Tsubscription
-{
-   public:
-   uint8_t mac[6];
-   std::list<String> topics;
-   Tsubscription (uint8_t *_mac, String _topic)
-   { 
-    memcpy(mac,_mac,6);
-    add_sub(_topic);
-   }
-   void add_sub(String _topic)
-   {
-     topics.push_back(_topic);
-   }
-};
-
-  std::list<Tsubscription> lista_suscripciones;
-
-std::list<Tsubscription>::iterator encuentra_suscripcion(uint8_t *_mac)
-{
-  for (std::list<Tsubscription>::iterator it=lista_suscripciones.begin() ; it != lista_suscripciones.end(); it++ ) {
-    bool igual=true;
-    for (int i=0; i<6; i++) if (it->mac[i]!=_mac[i]) {igual= false; break;}
-    if(igual) return it;
-  }
-  return lista_suscripciones.end();
-}
-
- String topic;
-  std::list<Tsubscription>::iterator it;
-
-case SUBS:
-     topic = String(std::string((char*) incomingData,len).c_str());
-     it = encuentra_suscripcion((uint8_t*)mac_addr);
-     if(it == lista_suscripciones.end())
-     {
-      Serial.println("Se añade nueva suscripcion");
-      lista_suscripciones.push_back(Tsubscription ((uint8_t*)mac_addr, topic));
-     }
-     else
-     {
-      Serial.println("Se amplia suscripcion");
-      it->add_sub(topic);
-     }
-     break;
-
-  * */
