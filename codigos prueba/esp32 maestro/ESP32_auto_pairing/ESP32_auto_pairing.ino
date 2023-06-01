@@ -33,7 +33,8 @@ class TmensajeESP
 };
 
 //-------------------------------------------------------------
-// clase para manejar un mensaje MQTT
+// clase para manejar un mensaje MQTT 
+//
 class TmensajeMQTT
 {
   public:
