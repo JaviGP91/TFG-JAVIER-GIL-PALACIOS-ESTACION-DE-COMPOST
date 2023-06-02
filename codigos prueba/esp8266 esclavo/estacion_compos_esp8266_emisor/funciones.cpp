@@ -62,8 +62,7 @@ void printAddress(DeviceAddress deviceAddress){
   void pedir_temperaturas(float temp[]){
 
     /*ENVIO DE PETICIÓN PARA ADQUIRIR TEMPERATURAS*/
-    
-  
+      
     for(int i=0;i<numberOfDevices; i++){
     // Search the wire for address
       if(sensors.getAddress(tempDeviceAddress, i)){
