@@ -3,13 +3,15 @@
  * Recuerda la configuración de emparejamiento usando FLASH o memoria RTC
  * Recuerda configuración del usuario usando FLASH
  * 
+ * Distribuido bajo licencia: CC BY-NC-SA 4.0 http://creativecommons.org/licenses/by-nc-sa/4.0/deed.es
+ * Autor: Andrés Rodríguez (andres@uma.es)
+ * 
  * Basado en el trabajo de:
   Rui Santos
   Complete project details at https://RandomNerdTutorials.com/?s=esp-now
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.
   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
   Based on JC Servaye example: https://https://github.com/Servayejc/esp8266_espnow
-
 */
 
 #ifndef AUTOpairing_H
