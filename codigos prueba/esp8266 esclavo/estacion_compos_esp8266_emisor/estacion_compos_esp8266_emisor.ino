@@ -8,6 +8,7 @@
 #include <DallasTemperature.h>
 #include "funciones.h" // fichero del proyecto
 
+AUTOpairing_t clienteAP;
 
 /*PINES*/
 const int Power_s_temp = 12; // Pin GPIO para alimentar los sensores de temperatura
@@ -62,7 +63,7 @@ void procesa_mensajes (String topic, String payload)
     if(WiFi.status() != WL_CONNECTED)
     {
       Serial.println("WiFi NO conectado");
-      AUTOpairing::gotoSleep();
+      clienteAP.gotoSleep();
     }
     Serial.println("");
     Serial.println("WiFi conectado");
@@ -85,7 +86,7 @@ void procesa_mensajes (String topic, String payload)
       Serial.println(F("Actualiación OK"));
       break;
     }
-    AUTOpairing::gotoSleep();
+    clienteAP.gotoSleep();
   } // end FOTA
   
   if(topic=="config") // el mesaje debe tener topic = config y payload = {"sleep": # , "timeout": # }
@@ -110,7 +111,7 @@ void procesa_mensajes (String topic, String payload)
      Serial.print("JSON timeout = ");
      Serial.println(valor);
      mi_configuracion.timeout=valor;
-     AUTOpairing::set_config((uint8_t*)&mi_configuracion);
+     clienteAP.set_config((uint8_t*)&mi_configuracion);
     }
     else
     {
@@ -135,22 +136,22 @@ void setup() {
   Serial.println("SETUP...");
   adquisicion_direcciones_temp();
 
-  AUTOpairing::init_config_size(sizeof(mi_configuracion));
+  clienteAP.init_config_size(sizeof(mi_configuracion));
   
-  if (AUTOpairing::get_config((uint8_t*)&mi_configuracion)==false)
+  if (clienteAP.get_config((uint8_t*)&mi_configuracion)==false)
   { // si no hay configuración guardada la pongo por defecto
     mi_configuracion.sleep=10;
     mi_configuracion.timeout=3000;
   }
   Serial.printf(" > DeepSleep : %d\n",mi_configuracion.sleep );
   Serial.printf(" > TimeOut   : %d\n",mi_configuracion.timeout );
-  AUTOpairing::set_timeOut(mi_configuracion.timeout,true); // tiempo máximo
-  AUTOpairing::set_deepSleep(mi_configuracion.sleep);  //tiempo dormido en segundos
-  AUTOpairing::set_channel(6);  // canal donde empieza el scaneo
-  AUTOpairing::set_debug(true);   // depuración, inicializar Serial antes
-  AUTOpairing::set_callback(procesa_mensajes);  //por defecto a NULL -> no se llama a ninguna función
+  clienteAP.set_timeOut(mi_configuracion.timeout,true); // tiempo máximo
+  clienteAP.set_deepSleep(mi_configuracion.sleep);  //tiempo dormido en segundos
+  clienteAP.set_channel(6);  // canal donde empieza el scaneo
+  clienteAP.set_debug(true);   // depuración, inicializar Serial antes
+  clienteAP.set_callback(procesa_mensajes);  //por defecto a NULL -> no se llama a ninguna función
   
-  AUTOpairing::begin();
+  clienteAP.begin();
 }
 
 //-------------------------------------------------------------------
@@ -158,9 +159,9 @@ void setup() {
 void loop() {
   //digitalWrite(Power_s_temp, HIGH);
   //digitalWrite(Power_s_hum, HIGH);
-  AUTOpairing::mantener_conexion();
+  clienteAP.mantener_conexion();
   
-  if (AUTOpairing::envio_disponible()) { 
+  if (clienteAP.envio_disponible()) { 
       char mensaje[256];
       
       pedir_temperaturas(temp);
@@ -168,7 +169,7 @@ void loop() {
       humedad=pedir_humedad();
       digitalWrite(Power_s_hum, LOW);  // apagamos sensor de humedad
       sprintf(mensaje, "{\"topic\":\"datos\",\"T1\":%4.2f,\"T2\":%4.2f,\"T3\":%4.2f, \"hum\":%4.2f }", temp[0], temp[1], temp[2], humedad);
-      AUTOpairing::espnow_send_check(mensaje); // hará deepsleep por defecto
+      clienteAP.espnow_send_check(mensaje); // hará deepsleep por defecto
   }
     
   //digitalWrite(Power_s_temp, LOW);

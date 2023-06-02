@@ -3,7 +3,13 @@
  * Recuerda la configuración de emparejamiento usando FLASH o memoria RTC
  * Recuerda configuración del usuario usando FLASH
  * 
- 
+ * Basado en el trabajo de:
+  Rui Santos
+  Complete project details at https://RandomNerdTutorials.com/?s=esp-now
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.
+  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  Based on JC Servaye example: https://https://github.com/Servayejc/esp8266_espnow
+
 */
 
 #ifndef AUTOpairing_H
@@ -17,12 +23,12 @@
 #include "Arduino.h"
 #include "AUTOpairing_common.h"
 
-class TmensajeMQTT
+class mensajeMQTT_t
 {
   public:
   String topic;
   String payload;
-  TmensajeMQTT ( String t, String p)
+  mensajeMQTT_t ( String t, String p)
    { 
     topic=t;
     payload=p;
@@ -30,7 +36,7 @@ class TmensajeMQTT
 };
 
 // cola de mensajes mqtt recibidos
-std::queue<TmensajeMQTT> cola_mensajes;
+std::queue<mensajeMQTT_t> cola_mensajes;
 
 uint8_t broadcastAddressX[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -42,8 +48,9 @@ uint8_t broadcastAddressX[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 #define MAX_CONFIG_SIZE 64
 #endif
 
-class AUTOpairing
+class AUTOpairing_t
 {
+  static AUTOpairing_t *este_objeto;
   
   enum PairingStatus {PAIR_REQUEST, PAIR_REQUESTED, PAIR_PAIRED, };
   
@@ -54,22 +61,22 @@ class AUTOpairing
     uint8_t config[MAX_CONFIG_SIZE]; // max config size
   } ;
 
-  static int config_size;
-  static int mensajes_sent;
-  static PairingStatus pairingStatus;
-  static struct_rtc rtcData;
-  static struct_pairing pairingData;
-  static bool mensaje_enviado; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
-  static bool terminar; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
-  static unsigned long previousMillis_scanChannel;    // will store last time channel was scanned 
-  static unsigned long start_time;  // para controlar el tiempo de escaneo
-  static bool esperando;  // esperando mensajes
-  static bool EEPROM_init;
+   int config_size;
+   int mensajes_sent;
+   PairingStatus pairingStatus;
+   struct_rtc rtcData;
+   struct_pairing pairingData;
+   bool mensaje_enviado; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
+   bool terminar; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
+   unsigned long previousMillis_scanChannel;    // will store last time channel was scanned 
+   unsigned long start_time;  // para controlar el tiempo de escaneo
+   bool esperando;  // esperando mensajes
+   bool EEPROM_init;
+  
+   void (*user_callback)(String, String); 
 
-  static void (*user_callback)(String, String); 
-
- //-----------------------------------------------------------
- static void printMAC(const uint8_t * mac_addr){
+//-----------------------------------------------------------
+ void printMAC(const uint8_t * mac_addr){
   char macStr[18];
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
@@ -78,58 +85,79 @@ class AUTOpairing
 
 // para modificar por el usuario usando funciones
 
-  static unsigned long timeOut;
-  static bool debug;
-  static bool timeOutEnabled;
-  static bool usar_FLASH;
-  static uint8_t channel;  // canal para empezar a escanear
-  static int segundos_en_deepSleep;   // tiempo dormido en segundos
-  static int panAddress;
+   unsigned long timeOut;
+   bool debug;
+   bool timeOutEnabled;
+   bool usar_FLASH;
+   uint8_t channel;  // canal para empezar a escanear
+   int segundos_en_deepSleep;   // tiempo dormido en segundos
+   int panAddress;
   
 public:
+
+ AUTOpairing_t()
+  {
+    este_objeto = this;
+    pairingStatus = PAIR_REQUEST;
+    mensaje_enviado=false; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
+    terminar=false; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
+    esperando=false; 
+    timeOutEnabled=true; 
+    usar_FLASH=false;
+    EEPROM_init=false;
+    segundos_en_deepSleep = 10;   // tiempo dormido en segundos
+    panAddress = 1;
+    config_size = MAX_CONFIG_SIZE;
+    start_time=0;  // para controlar el tiempo de escaneo
+    previousMillis_scanChannel=0;   
+    timeOut=3000;
+    debug=true;
+    channel = 6;  // canal para empezar a escanear
+    mensajes_sent=0; 
+  }
 //-----------------------------------------------------------
-static void set_pan(uint8_t _pan=1)
+ void set_pan(uint8_t _pan=1)
 {
   panAddress=_pan;
 }
 //-----------------------------------------------------------
-static int get_pan()
+ int get_pan()
 {
   return panAddress;
 }
 //-----------------------------------------------------------
-static void set_timeOut(unsigned long _timeOut=3000, bool _enable=true)
+ void set_timeOut(unsigned long _timeOut=3000, bool _enable=true)
 {
   timeOut=_timeOut;
   timeOutEnabled=_enable;
 }
 
 //-----------------------------------------------------------
-static void set_channel(uint8_t _channel=6)
+ void set_channel(uint8_t _channel=6)
 {
   channel=_channel;
 }
 
 //-----------------------------------------------------------
-static void set_FLASH(bool _usar_FLASH=false)
+ void set_FLASH(bool _usar_FLASH=false)
 {
   usar_FLASH=_usar_FLASH;
 }
 
 //-----------------------------------------------------------
-static void set_debug(bool _debug=true)
+ void set_debug(bool _debug=true)
 {
   debug=_debug;
 }
 
 //-----------------------------------------------------------
-static void set_deepSleep(int _segundos_en_deepSleep=10)
+ void set_deepSleep(int _segundos_en_deepSleep=10)
 {
   segundos_en_deepSleep=_segundos_en_deepSleep;
 }
 
 //-----------------------------------------------------------
-static bool init_config_size(uint8_t size)
+ bool init_config_size(uint8_t size)
 {
   config_size = size;
   if(!EEPROM_init) { EEPROM.begin(sizeof(rtcData)); EEPROM_init=true; }
@@ -143,7 +171,7 @@ static bool init_config_size(uint8_t size)
 }
 
 //-----------------------------------------------------------
-static bool get_config(uint8_t* config)
+ bool get_config(uint8_t* config)
 {
   //init check FLASH 
   
@@ -167,7 +195,7 @@ static bool get_config(uint8_t* config)
 }
 
 //-----------------------------------------------------------
-static void set_config(uint8_t* config)
+ void set_config(uint8_t* config)
 {
   rtcData.code2=MAGIC_CODE2;
   memcpy(&(rtcData.config), config, config_size);
@@ -177,8 +205,9 @@ static void set_config(uint8_t* config)
 }
 
 //-----------------------------------------------------------
-static void begin()
+ void begin()
   {
+    if(debug) Serial.println("\nComienza AUTOpairing...");
     previousMillis_scanChannel=0;
     start_time=millis();
     
@@ -230,18 +259,21 @@ static void begin()
       esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
        
       // Register for a callback function that will be called when data is received
-      esp_now_register_recv_cb(AUTOpairing::OnDataRecv);
-      esp_now_register_send_cb(AUTOpairing::OnDataSent);
+      esp_now_register_recv_cb(AUTOpairing_t::OnDataRecv);
+      esp_now_register_send_cb(AUTOpairing_t::OnDataSent);
   
       esp_now_add_peer(pairingData.macAddr, ESP_NOW_ROLE_COMBO, pairingData.channel, NULL, 0); // add the server to the peer list 
       pairingStatus = PAIR_PAIRED ;            // set the pairing status
     }
 }
 
+static void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
+  este_objeto->_OnDataSent(mac_addr,sendStatus);
+}
 
 //-----------------------------------------------------------
 // Callback when data is sent
-static void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
+ void _OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
   if(debug) Serial.print("Estado de envío del último paquete a ");
   printMAC(mac_addr);
   if (sendStatus == 0){
@@ -277,9 +309,13 @@ static void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
   
 }
 
+static void OnDataRecv(uint8_t * mac, uint8_t *incommingData, uint8_t len)
+{
+  este_objeto->_OnDataRecv(mac,incommingData,len);
+}
 //-----------------------------------------------------------
 // Callback when data is received
-static void OnDataRecv(uint8_t * mac, uint8_t *incommingData, uint8_t len) {
+ void _OnDataRecv(uint8_t * mac, uint8_t *incommingData, uint8_t len) {
   uint8_t type = incommingData[0];
   if(debug) Serial.print("tipo de mensaje recibido = ");
   if(debug) Serial.print(type,BIN);
@@ -307,7 +343,7 @@ static void OnDataRecv(uint8_t * mac, uint8_t *incommingData, uint8_t len) {
         for(i=0; i<len; i++) if(incommingData[i]=='|') break;
         topic=String(std::string((char*)incommingData+1,i-1).c_str());
         payload = String(std::string((char*)(incommingData+i+1),len-i-1).c_str());
-        if(user_callback!=NULL) cola_mensajes.push(TmensajeMQTT(topic, payload));
+        if(user_callback!=NULL) cola_mensajes.push(mensajeMQTT_t(topic, payload));
         //user_callback(topic,payload);
     break;
 
@@ -344,13 +380,13 @@ static void OnDataRecv(uint8_t * mac, uint8_t *incommingData, uint8_t len) {
 
 //void func ( void (*f)(int) );
 //-----------------------------------------------------------
-static void set_callback( void (*_user_callback)(String, String) ) 
+ void set_callback( void (*_user_callback)(String, String) ) 
 {
   user_callback=_user_callback;
 }
   
 //-----------------------------------------------------------
-static void check_messages()
+ void check_messages()
   {
     mensaje_enviado=true;
     esperando=true;
@@ -362,14 +398,14 @@ static void check_messages()
   }
 
 //-----------------------------------------------------------
-static bool espnow_send_check(char * mensaje, bool fin=true, uint8_t _msgType=DATA)
+ bool espnow_send_check(char * mensaje, bool fin=true, uint8_t _msgType=DATA)
   {
     esperando=true;
     timeOut+=500;
     return espnow_send(mensaje, fin, _msgType | CHECK);
   }
 //-----------------------------------------------------------
-static bool espnow_send(char * mensaje, bool fin=true, uint8_t _msgType=DATA)
+ bool espnow_send(char * mensaje, bool fin=true, uint8_t _msgType=DATA)
   {
     _msgType = _msgType | ((panAddress << PAN_OFFSET) & MASK_PAN);
     if(debug) Serial.print("sending message type = ");
@@ -397,31 +433,31 @@ static bool espnow_send(char * mensaje, bool fin=true, uint8_t _msgType=DATA)
   }
 
 //-----------------------------------------------------------
-static int mensajes_enviados()
+ int mensajes_enviados()
 {
   return mensajes_sent;
 }
 
 //-----------------------------------------------------------
-static bool emparejado()
+ bool emparejado()
 {
   return (pairingStatus==PAIR_PAIRED) ;
 }
 
 //-----------------------------------------------------------
-static bool envio_disponible()
+ bool envio_disponible()
 {
   return (pairingStatus==PAIR_PAIRED && mensaje_enviado==false && terminar==false) ;
 }
 
 //-----------------------------------------------------------
-static bool mantener_conexion()
+ bool mantener_conexion()
   {
   unsigned long currentMillis;
 
   if(!cola_mensajes.empty())
   {
-    TmensajeMQTT mensaje = cola_mensajes.front();
+    mensajeMQTT_t mensaje = cola_mensajes.front();
     user_callback(mensaje.topic,mensaje.payload);
     cola_mensajes.pop();
   }
@@ -455,8 +491,8 @@ static bool mantener_conexion()
     }
     esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
     // set callback routines
-    esp_now_register_send_cb(AUTOpairing::OnDataSent);
-    esp_now_register_recv_cb(AUTOpairing::OnDataRecv);
+    esp_now_register_send_cb(AUTOpairing_t::OnDataSent);
+    esp_now_register_recv_cb(AUTOpairing_t::OnDataRecv);
     
     // set pairing data to send to the server
     pairingData.msgType = PAIRING;
@@ -490,7 +526,7 @@ static bool mantener_conexion()
 
 
 //--------------------------------------------------------
-static void gotoSleep() {
+ void gotoSleep() {
   // add some randomness to avoid collisions with multiple devices
   if(debug) Serial.println("Apaga y vamonos");
   ESP.deepSleepInstant(segundos_en_deepSleep * 1000000, RF_NO_CAL);
@@ -503,25 +539,6 @@ static void gotoSleep() {
 //-----------------------------------------------------------
 
 // statics:
-
- AUTOpairing::struct_rtc AUTOpairing::rtcData;
- struct_pairing AUTOpairing::pairingData;
- AUTOpairing::PairingStatus AUTOpairing::pairingStatus = PAIR_REQUEST;
- bool AUTOpairing::mensaje_enviado=false; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
- bool AUTOpairing::terminar=false; // para saber cuando hay que dejar de enviar porque ya se hizo y estamos esperando confirmación
- bool AUTOpairing::esperando=false; 
- bool AUTOpairing::timeOutEnabled=true; 
- bool AUTOpairing::usar_FLASH=false;
- bool AUTOpairing::EEPROM_init=false;
- int AUTOpairing::segundos_en_deepSleep = 10;   // tiempo dormido en segundos
- int AUTOpairing::panAddress = 1;
- int AUTOpairing::config_size = MAX_CONFIG_SIZE;
- unsigned long AUTOpairing::start_time=0;  // para controlar el tiempo de escaneo
- unsigned long AUTOpairing::previousMillis_scanChannel=0;   
- unsigned long AUTOpairing::timeOut=3000;
- bool AUTOpairing::debug=true;
- uint8_t AUTOpairing::channel = 6;  // canal para empezar a escanear
- int AUTOpairing::mensajes_sent=0; 
- void (*AUTOpairing::user_callback)(String, String)=NULL;
+ AUTOpairing_t *AUTOpairing_t::este_objeto=NULL;
 
 #endif
