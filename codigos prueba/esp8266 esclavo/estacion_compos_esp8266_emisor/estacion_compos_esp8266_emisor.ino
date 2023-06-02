@@ -16,7 +16,7 @@ const int Power_s_hum = 13; // Pin GPIO para alimentar sensor de humedad
 /*VARIABLES*/
 float S1_T=0, S2_T=0, S3_T=0;
 float temp[3];
-
+float humedad;
 //-----------------------------------------------------------
 
 struct configuracion
@@ -121,8 +121,6 @@ void procesa_mensajes (String topic, String payload)
 
 //-------------------------------------------------------------------
 //-----------------------   SETUP   ---------------------------------
-
-
 void setup() {
   // Iniciar alimentación de sensores
   pinMode(Power_s_temp, OUTPUT);
@@ -167,7 +165,7 @@ void loop() {
       
       pedir_temperaturas(temp);
       digitalWrite(Power_s_temp, LOW); // apagamos los sensores de temperatura
-      float humedad=pedir_humedad();
+      humedad=pedir_humedad();
       digitalWrite(Power_s_hum, LOW);  // apagamos sensor de humedad
       sprintf(mensaje, "{\"topic\":\"datos\",\"T1\":%4.2f,\"T2\":%4.2f,\"T3\":%4.2f, \"hum\":%4.2f }", temp[0], temp[1], temp[2], humedad);
       AUTOpairing::espnow_send_check(mensaje); // hará deepsleep por defecto
