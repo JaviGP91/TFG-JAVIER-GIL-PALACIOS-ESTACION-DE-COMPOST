@@ -90,10 +90,12 @@ const char* mqtt_user = "infind";
 const char* mqtt_pass = "zancudo";
 
 // Replace with your network credentials (STATION)
-const char* ssid = "infind";
-const char* password = "1518wifi";
+//const char* ssid = "infind";
+//const char* password = "1518wifi";
 //const char* ssid = "tfgshuerta";
 //const char* password = "946CXQ2d*WHm";
+const char* ssid = "sagemcom67E0_EXT";
+const char* password = "UWZKFTHRWZZTYY";
 
 esp_now_peer_info_t slave;
 int myChannel; 

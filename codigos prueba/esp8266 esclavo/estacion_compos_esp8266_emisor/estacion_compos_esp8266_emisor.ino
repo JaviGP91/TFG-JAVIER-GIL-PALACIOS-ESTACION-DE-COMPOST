@@ -28,8 +28,10 @@ struct configuracion
 
 //--------------------- ACTUALIZACION FOTA ----------------------
 
-const char* ssid = "huerticawifi";
-const char* password = "4cc3sshu3rt1c4";
+//const char* ssid = "huerticawifi";
+//const char* password = "4cc3sshu3rt1c4";
+const char* ssid = "sagemcom67E0_EXT";
+const char* password = "UWZKFTHRWZZTYY";
 #define OTA_URL    "https://huertociencias.uma.es/esp8266-ota-update"
 #define HTTP_OTA_VERSION   String(__FILE__).substring(String(__FILE__).lastIndexOf('\\')+1) + ".d1_mini_pro"
 
