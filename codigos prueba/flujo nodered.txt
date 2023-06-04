@@ -1,0 +1,1339 @@
+[
+    {
+        "id": "b60167af36f90a0d",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "2C3AE80EA525",
+        "payloadType": "str",
+        "x": 160,
+        "y": 280,
+        "wires": [
+            [
+                "82a2b49255e8d590"
+            ]
+        ]
+    },
+    {
+        "id": "82a2b49255e8d590",
+        "type": "function",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "func": "msg.topic=\"infind/espnowdevice\";\nmsg.payload ={\"mac\":msg.payload,\"topic\":\"config\", \"payload\":{\"sleep\":5,\"timeout\":4000}};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 320,
+        "wires": [
+            [
+                "5e144fdd65f628b2",
+                "9a0944994a6a87b8"
+            ]
+        ]
+    },
+    {
+        "id": "5e144fdd65f628b2",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "9a0944994a6a87b8",
+        "type": "mqtt out",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "2b251178.95ad2e",
+        "x": 530,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f21af1361ae116f8",
+        "type": "comment",
+        "z": "87a304397ab071e2",
+        "name": "Envío de mensaje al dispositivo",
+        "info": "",
+        "x": 190,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "555724660a60f462",
+        "type": "comment",
+        "z": "87a304397ab071e2",
+        "name": "mensajes del dispositivo",
+        "info": "",
+        "x": 190,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "af5708afbc2a25be",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "ECFABC58E695",
+        "payloadType": "str",
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "82a2b49255e8d590"
+            ]
+        ]
+    },
+    {
+        "id": "9f8bf1ae99f582c9",
+        "type": "function",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "func": "msg.topic=\"infind/espnowdevice\";\nmsg.payload ={\"mac\":msg.payload,\"topic\":\"fota\", \"payload\":null};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 280,
+        "wires": [
+            [
+                "767d4f11d142efbe",
+                "5863f997902e0d33"
+            ]
+        ]
+    },
+    {
+        "id": "767d4f11d142efbe",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1090,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "5863f997902e0d33",
+        "type": "mqtt out",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "2b251178.95ad2e",
+        "x": 1090,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "88e63a818eeee191",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "BCDDC2241289",
+        "payloadType": "str",
+        "x": 720,
+        "y": 240,
+        "wires": [
+            [
+                "9f8bf1ae99f582c9"
+            ]
+        ]
+    },
+    {
+        "id": "aff731b08bd88c88",
+        "type": "comment",
+        "z": "87a304397ab071e2",
+        "name": "Envío orden FOTA",
+        "info": "",
+        "x": 710,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "622ac4639d8262ec",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "5CCF7FA1B123",
+        "payloadType": "str",
+        "x": 160,
+        "y": 440,
+        "wires": [
+            [
+                "82a2b49255e8d590"
+            ]
+        ]
+    },
+    {
+        "id": "d0ab552a2cf028dd",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "ECFABC58E695",
+        "payloadType": "str",
+        "x": 760,
+        "y": 340,
+        "wires": [
+            [
+                "9f8bf1ae99f582c9"
+            ]
+        ]
+    },
+    {
+        "id": "58a0161e2cd92ef6",
+        "type": "json",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 390,
+        "y": 1080,
+        "wires": [
+            [
+                "183d9b90a43d5bd8",
+                "951a7221aa8211ab",
+                "55a81a278f7bb5ba",
+                "9d7034c9e6817f94",
+                "35f4e4aac7c5af8b"
+            ]
+        ]
+    },
+    {
+        "id": "507ac751219f1063",
+        "type": "mqtt in",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "topic": "infind/espnow/#",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "2b251178.95ad2e",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 180,
+        "y": 1060,
+        "wires": [
+            [
+                "58a0161e2cd92ef6",
+                "ad76f8cb6e327d9b"
+            ]
+        ]
+    },
+    {
+        "id": "183d9b90a43d5bd8",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "ad76f8cb6e327d9b",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "951a7221aa8211ab",
+        "type": "change",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.payload.T1",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 1160,
+        "wires": [
+            [
+                "7e41c6017e5f63cc",
+                "600d37791ccfbda8"
+            ]
+        ]
+    },
+    {
+        "id": "7e41c6017e5f63cc",
+        "type": "ui_gauge",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 1,
+        "width": "7",
+        "height": "5",
+        "gtype": "gage",
+        "title": "TEMPERATURA SENSOR 1",
+        "label": "ºC",
+        "format": "{{value | number:1}}",
+        "min": "-10",
+        "max": "50",
+        "colors": [
+            "#0080ff",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 980,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "600d37791ccfbda8",
+        "type": "ui_chart",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 2,
+        "width": "7",
+        "height": "5",
+        "label": "Sensor 1 - Línea Temporal Tª",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "-10",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d62728",
+            "#d62728",
+            "#d62728",
+            "#ccd61e",
+            "#ccd61e",
+            "#ccd61e",
+            "#96eaff",
+            "#96eaff",
+            "#96eaff"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 990,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "55a81a278f7bb5ba",
+        "type": "change",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.payload.T2",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 1280,
+        "wires": [
+            [
+                "f6134fa067f46f9f",
+                "fdd9dc0498da927d"
+            ]
+        ]
+    },
+    {
+        "id": "f6134fa067f46f9f",
+        "type": "ui_gauge",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 3,
+        "width": "7",
+        "height": "5",
+        "gtype": "gage",
+        "title": "TEMPERATURA SENSOR 2",
+        "label": "ºC",
+        "format": "{{value | number:1}}",
+        "min": "-10",
+        "max": "50",
+        "colors": [
+            "#0080ff",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 980,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "fdd9dc0498da927d",
+        "type": "ui_chart",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 4,
+        "width": "7",
+        "height": "5",
+        "label": "Sensor 2 - Línea Temporal Tª",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "-10",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d62728",
+            "#d62728",
+            "#d62728",
+            "#ccd61e",
+            "#ccd61e",
+            "#ccd61e",
+            "#96eaff",
+            "#96eaff",
+            "#96eaff"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 990,
+        "y": 1340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d7034c9e6817f94",
+        "type": "change",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.payload.T3",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 1400,
+        "wires": [
+            [
+                "82872eb9f27bf71a",
+                "32a2d10962fa1308"
+            ]
+        ]
+    },
+    {
+        "id": "82872eb9f27bf71a",
+        "type": "ui_gauge",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 5,
+        "width": "7",
+        "height": "5",
+        "gtype": "gage",
+        "title": "TEMPERATURA SENSOR 3",
+        "label": "ºC",
+        "format": "{{value | number:1}}",
+        "min": "-10",
+        "max": "50",
+        "colors": [
+            "#0080ff",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 980,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "32a2d10962fa1308",
+        "type": "ui_chart",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 6,
+        "width": "7",
+        "height": "5",
+        "label": "Sensor 3 - Línea Temporal Tª",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "-10",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d62728",
+            "#d62728",
+            "#d62728",
+            "#ccd61e",
+            "#ccd61e",
+            "#ccd61e",
+            "#96eaff",
+            "#96eaff",
+            "#96eaff"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 990,
+        "y": 1460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "35f4e4aac7c5af8b",
+        "type": "change",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.payload.hum",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 1540,
+        "wires": [
+            [
+                "a90ba36e999cae4d",
+                "9de5532b9d121dfd"
+            ]
+        ]
+    },
+    {
+        "id": "a90ba36e999cae4d",
+        "type": "ui_gauge",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 7,
+        "width": "7",
+        "height": "5",
+        "gtype": "gage",
+        "title": "SENSOR HUMEDAD",
+        "label": "%",
+        "format": "{{value | number:1}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#0080ff",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 960,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "9de5532b9d121dfd",
+        "type": "ui_chart",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "group": "b9094f8c26d851e0",
+        "order": 8,
+        "width": "7",
+        "height": "5",
+        "label": "Línea Temporal H%",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "-10",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#d62728",
+            "#d62728",
+            "#d62728",
+            "#ccd61e",
+            "#ccd61e",
+            "#ccd61e",
+            "#96eaff",
+            "#96eaff",
+            "#96eaff"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 950,
+        "y": 1600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2395b45e8c894841",
+        "type": "comment",
+        "z": "87a304397ab071e2",
+        "name": "mensajes del dispositivo graficados",
+        "info": "",
+        "x": 980,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "dc08cbf909f22a6b",
+        "type": "mqtt in",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "topic": "infind/espnowpairing",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "2b251178.95ad2e",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 190,
+        "y": 1780,
+        "wires": [
+            [
+                "e6e11b2b70dfeaa8"
+            ]
+        ]
+    },
+    {
+        "id": "e6e11b2b70dfeaa8",
+        "type": "json",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 420,
+        "y": 1780,
+        "wires": [
+            [
+                "5b400c459d078db7",
+                "b7fdb39480765b4d"
+            ]
+        ]
+    },
+    {
+        "id": "5b400c459d078db7",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "529fe0c086c2ebce",
+        "type": "mongodb out",
+        "z": "87a304397ab071e2",
+        "mongodb": "d6cb3481285aed5a",
+        "name": "",
+        "collection": "macs",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "store",
+        "x": 960,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "b7fdb39480765b4d",
+        "type": "function",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "func": "msg.payload.date = new Date();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1780,
+        "wires": [
+            [
+                "529fe0c086c2ebce",
+                "826e469574fa20a1"
+            ]
+        ]
+    },
+    {
+        "id": "328490fb336e6e29",
+        "type": "inject",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 160,
+        "y": 1860,
+        "wires": [
+            [
+                "5714101e03809fd9"
+            ]
+        ]
+    },
+    {
+        "id": "e39b8eda7bf83dab",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 1940,
+        "wires": []
+    },
+    {
+        "id": "5714101e03809fd9",
+        "type": "mongodb in",
+        "z": "87a304397ab071e2",
+        "mongodb": "d6cb3481285aed5a",
+        "name": "",
+        "collection": "macs",
+        "operation": "find",
+        "x": 510,
+        "y": 1860,
+        "wires": [
+            [
+                "1e2aa2d355fb8031",
+                "e39b8eda7bf83dab"
+            ]
+        ]
+    },
+    {
+        "id": "98348d2580a653a0",
+        "type": "comment",
+        "z": "87a304397ab071e2",
+        "name": "Registro de dispositivos emparejados",
+        "info": "",
+        "x": 230,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "826e469574fa20a1",
+        "type": "json",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 870,
+        "y": 1720,
+        "wires": [
+            [
+                "8526ef3b304f37b8"
+            ]
+        ]
+    },
+    {
+        "id": "8526ef3b304f37b8",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1090,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "1e2aa2d355fb8031",
+        "type": "ui_table",
+        "z": "87a304397ab071e2",
+        "group": "444c3c98d25bc028",
+        "name": "MAC Table",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "columns": [
+            {
+                "field": "mac",
+                "title": "MAC",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "date",
+                "title": "FECHA DE REGISTRO",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 1,
+        "cts": true,
+        "x": 760,
+        "y": 2060,
+        "wires": [
+            [
+                "3af7575edfdac925"
+            ]
+        ]
+    },
+    {
+        "id": "aaaadd0cd3996933",
+        "type": "ui_table",
+        "z": "87a304397ab071e2",
+        "group": "444c3c98d25bc028",
+        "name": "",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "columns": [],
+        "outputs": 1,
+        "cts": true,
+        "x": 1220,
+        "y": 2060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3af7575edfdac925",
+        "type": "ui_template",
+        "z": "87a304397ab071e2",
+        "group": "444c3c98d25bc028",
+        "name": "ACTUALIZAR TABLA",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "format": "<script>\n(function(scope) {\n    scope.$watch('msg.payload', function(newVal) {\n        if (newVal) {\n            var table = $(\"#node-red-ui-table-28ed439f5fffb54f\");\n            table.DataTable().clear().rows.add(newVal).draw();\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1010,
+        "y": 2060,
+        "wires": [
+            [
+                "aaaadd0cd3996933"
+            ]
+        ]
+    },
+    {
+        "id": "91ebc27932d1c646",
+        "type": "ui_form",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "label": "",
+        "group": "26eb0c42.180c94",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Tiempo de hibernacion",
+                "value": "sleep",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Tmax",
+                "value": "timeout",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "sleep": "",
+            "timeout": ""
+        },
+        "payload": "",
+        "submit": "Enviar datos al servidor",
+        "cancel": "",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 130,
+        "y": 720,
+        "wires": [
+            [
+                "f632e878b65ee683"
+            ]
+        ]
+    },
+    {
+        "id": "33f2532b520e7fbb",
+        "type": "function",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "func": "msg.topic = \"infind/espnowdevice\";\nmsg.payload = {\n    \"mac\":\"ECFABC58E695\",\n    \"topic\": \"config\",\n    \"payload\": {\n        \"sleep\": flow.get('sleep'),\n        \"timeout\": flow.get('timeout')\n    }\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 700,
+        "wires": [
+            [
+                "2868d8074ab53172",
+                "40497facc61bd20a"
+            ]
+        ]
+    },
+    {
+        "id": "2868d8074ab53172",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "40497facc61bd20a",
+        "type": "mqtt out",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "2b251178.95ad2e",
+        "x": 830,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "f632e878b65ee683",
+        "type": "change",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sleep",
+                "pt": "flow",
+                "to": "payload.sleep",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "timeout",
+                "pt": "flow",
+                "to": "payload.timeout",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 720,
+        "wires": [
+            [
+                "33f2532b520e7fbb",
+                "9c9eb0580c35b2ac"
+            ]
+        ]
+    },
+    {
+        "id": "9c9eb0580c35b2ac",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "59234b4d27e31141",
+        "type": "ui_dropdown",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "label": "Seleccionar MAC",
+        "tooltip": "",
+        "place": "",
+        "group": "26eb0c42.180c94",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "ECFABC58E695",
+                "value": "ECFABC58E695",
+                "type": "str"
+            },
+            {
+                "label": "5CCF7FA1B123",
+                "value": "5CCF7FA1B123",
+                "type": "str"
+            },
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 150,
+        "y": 820,
+        "wires": [
+            [
+                "71c7d9f85fa50ee0"
+            ]
+        ]
+    },
+    {
+        "id": "71c7d9f85fa50ee0",
+        "type": "debug",
+        "z": "87a304397ab071e2",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "2b251178.95ad2e",
+        "type": "mqtt-broker",
+        "name": "iot infind",
+        "broker": "iot.ac.uma.es",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "b9094f8c26d851e0",
+        "type": "ui_group",
+        "name": "LECTURAS REALIZADAS",
+        "tab": "284e3dbe88bd71d3",
+        "order": 2,
+        "disp": true,
+        "width": "14",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d6cb3481285aed5a",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "pairing",
+        "name": ""
+    },
+    {
+        "id": "444c3c98d25bc028",
+        "type": "ui_group",
+        "name": "REGISTRO DE CONEXIÓN CON SERVIDORES ",
+        "tab": "284e3dbe88bd71d3",
+        "order": 3,
+        "disp": true,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "26eb0c42.180c94",
+        "type": "ui_group",
+        "name": "Configuración toma de datos",
+        "tab": "284e3dbe88bd71d3",
+        "order": 1,
+        "disp": true,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "284e3dbe88bd71d3",
+        "type": "ui_tab",
+        "name": "TFG J.G.P.",
+        "icon": "dashboard",
+        "order": 13,
+        "disabled": false,
+        "hidden": false
+    }
+]
