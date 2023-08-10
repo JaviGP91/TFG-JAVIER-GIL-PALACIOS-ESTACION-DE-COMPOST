@@ -31,6 +31,7 @@ void printAddress(DeviceAddress deviceAddress){
     // FUNCIÓN DE ADQUISICIÓN DE DIRECCIONES DE SENSORES CONECTADOS AL BUS DE TEMPERATURA
   void adquisicion_direcciones_temp(){
     sensors.begin();
+    sensors.setWaitForConversion(true);
     // Variable para almacenar cuantos dispositivos tengo conectados al bus
     numberOfDevices = sensors.getDeviceCount();
   
@@ -65,12 +66,12 @@ void printAddress(DeviceAddress deviceAddress){
       
     for(int i=0;i<numberOfDevices; i++){
     // Search the wire for address
-      if(sensors.getAddress(tempDeviceAddress, i)){
+      if(1 || sensors.getAddress(tempDeviceAddress, i)){
       // Output the device ID
       Serial.print("Temperatura sensor: ");
       Serial.println(i,DEC);
       // Print the data
-      float tempC = sensors.getTempC(tempDeviceAddress);
+      float tempC = sensors.getTempCByIndex(i);
       temp[i]=tempC;
       Serial.print("Temp C: ");
       Serial.print(tempC);
@@ -91,8 +92,8 @@ float  pedir_humedad()
 
   
   /*calibración sensor de humedad*/
-  float ValorHumedadMinima=780; // Registre el valor del sensor cuando la sonda esté expuesta al aire como "ValorHumedadMinima". Este es el valor límite del suelo seco "Humedad: 0% HR"
-  float ValorHumedadMaxima=375; // Registre el valor del sensor cuando la sonda esté expuesta al agua como "ValorHumedadMaxima". Este es el valor límite del suelo húmedo "Humedad: 100% HR"
+  float ValorHumedadMinima=1080; // Registre el valor del sensor cuando la sonda esté expuesta al aire como "ValorHumedadMinima". Este es el valor límite del suelo seco "Humedad: 0% HR"
+  float ValorHumedadMaxima=420; // Registre el valor del sensor cuando la sonda esté expuesta al agua como "ValorHumedadMaxima". Este es el valor límite del suelo húmedo "Humedad: 100% HR"
   float HUM_RANGO (ValorHumedadMinima - ValorHumedadMaxima);
 
  delay(900);

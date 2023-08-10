@@ -136,7 +136,7 @@ void setup() {
 
   Serial.println();
   Serial.println("SETUP...");
-  adquisicion_direcciones_temp();
+  
 
   clienteAP.init_config_size(sizeof(mi_configuracion));
   
@@ -154,6 +154,7 @@ void setup() {
   clienteAP.set_callback(procesa_mensajes);  //por defecto a NULL -> no se llama a ninguna función
   
   clienteAP.begin();
+  adquisicion_direcciones_temp();
 }
 
 //-------------------------------------------------------------------
