@@ -1,0 +1,8 @@
+https://www.cetronic.es/sqlcommerce/disenos/plantilla1/seccion/producto/DetalleProducto.jsp?idIdioma=&idTienda=93&codProducto=999334005&cPath=1343
+https://wiki.dfrobot.com/Capacitive_Soil_Moisture_Sensor_SKU_SEN0193#target_0
+https://randomnerdtutorials.com/projects-esp8266/
+http://esp32.net/
+https://naylampmechatronics.com/blog/46_tutorial-sensor-digital-de-temperatura-ds18b20.html
+https://wiki.dfrobot.com/Capacitive_Soil_Moisture_Sensor_SKU_SEN0193
+https://www.cetronic.es/sqlcommerce/ficheros/dk_93/productos/999334005-4.jpg
+https://mqtt.org/
