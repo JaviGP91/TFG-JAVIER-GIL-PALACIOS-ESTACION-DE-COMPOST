@@ -213,7 +213,7 @@ public:
     previousMillis_scanChannel=0;
     start_time=millis();
     
-    //init check FLASH or RTC MEM
+    // Inicialización de la memoria EEPROM o RTC MEM según la configuración
     // usamos rtc memory
     if(usar_FLASH)
     {
@@ -230,7 +230,7 @@ public:
     if(debug) Serial.print(" - esperando: ");
     if(debug) Serial.println((unsigned long)MAGIC_CODE1,HEX);
     
-    if(rtcData.code1==MAGIC_CODE1)
+    if(rtcData.code1==MAGIC_CODE1) //Si coinciden, significa que hay datos de emparejamiento almacenados en la memoria y se procede a recuperar esos datos.
     {
       memcpy(&pairingData, &(rtcData.data), sizeof(pairingData));
       if(debug) Serial.print("Emparejamiento recuperado de la memoria RTC del usuario ");

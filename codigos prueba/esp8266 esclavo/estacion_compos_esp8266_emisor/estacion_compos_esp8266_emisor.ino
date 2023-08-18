@@ -8,7 +8,7 @@
 #include <DallasTemperature.h>
 #include "funciones.h" // fichero del proyecto
 
-AUTOpairing_t clienteAP;
+
 
 /*PINES*/
 const int Power_s_temp = 12; // Pin GPIO para alimentar los sensores de temperatura
@@ -18,9 +18,12 @@ const int Power_s_hum = 13; // Pin GPIO para alimentar sensor de humedad
 float S1_T=0, S2_T=0, S3_T=0;
 float temp[3];
 float humedad;
-//-----------------------------------------------------------
 
-struct configuracion
+// Objeto de la clase AUTOpairing_t para la comunicación por ESP-NOW.
+AUTOpairing_t clienteAP; 
+
+// Estructura utilizada para almacenar la configuración del programa, (tiempo de sueño profundo y el tiempo de espera de conexión).
+struct configuracion     
 {
   uint32_t sleep;
   uint32_t timeout;
