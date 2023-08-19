@@ -67,11 +67,10 @@ class TmensajeMQTT
 
 // cola de mensajes esp-now recibidos
 std::queue<TmensajeESP> cola_mensajes;
-// cola de mensajes esp-now recibidos
+// cola de mensajes MQTT recibidos
 std::list<TmensajeMQTT> mensajes_MQTT;
 // cola de dispositivos (mac) esperando por sus mensajes
 std::queue<String> readyMACs;
-
 std::queue<String> pairMACs;
 
 WiFiClient wClient;
