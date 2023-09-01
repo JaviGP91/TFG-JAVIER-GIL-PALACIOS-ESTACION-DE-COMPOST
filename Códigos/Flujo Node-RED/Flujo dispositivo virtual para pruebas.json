@@ -1,0 +1,207 @@
+[
+    {
+        "id": "9e0d3e46ce6903e3",
+        "type": "tab",
+        "label": "FAKE DEVICE",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9351c0b8b12dc828",
+        "type": "function",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "func": "msg.payload={\"mac\":\"AABBAABBAABB\",\n             \"payload\":{\"topic\":\"datos\",\"T1\":msg.payload.Temperatura+5,\"T2\":msg.payload.Temperatura+10,\"T3\":msg.payload.Temperatura,\"hum\":msg.payload.Humedad,\"raw\":msg.payload.Humedad*10}};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 600,
+        "wires": [
+            [
+                "f77e1e7dc472d748",
+                "8417525b3e20f304"
+            ]
+        ]
+    },
+    {
+        "id": "f77e1e7dc472d748",
+        "type": "debug",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1130,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "667f596dbdf91e18",
+        "type": "inject",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 500,
+        "y": 420,
+        "wires": [
+            [
+                "e9dec4615faa1e16"
+            ]
+        ]
+    },
+    {
+        "id": "e9dec4615faa1e16",
+        "type": "function",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "func": "msg.payload={\"mac\":\"AABBAABBAABB\"};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 420,
+        "wires": [
+            [
+                "90566072debf74ff"
+            ]
+        ]
+    },
+    {
+        "id": "90566072debf74ff",
+        "type": "mqtt out",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "topic": "infind/espnowpairing",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "c264c450.65ebd8",
+        "x": 860,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "30bb662d.9499ea",
+        "type": "mqtt in",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "topic": "huerta/ESP12_13064636/datos",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "c264c450.65ebd8",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 550,
+        "y": 540,
+        "wires": [
+            [
+                "da95d601.56ab78",
+                "ad53dc0c.e9c1"
+            ]
+        ]
+    },
+    {
+        "id": "da95d601.56ab78",
+        "type": "debug",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1130,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ad53dc0c.e9c1",
+        "type": "json",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 810,
+        "y": 600,
+        "wires": [
+            [
+                "9351c0b8b12dc828"
+            ]
+        ]
+    },
+    {
+        "id": "8417525b3e20f304",
+        "type": "mqtt out",
+        "z": "9e0d3e46ce6903e3",
+        "name": "",
+        "topic": "infind/espnow/AABBAABBAABB/datos",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "c264c450.65ebd8",
+        "x": 1210,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "c264c450.65ebd8",
+        "type": "mqtt-broker",
+        "name": "iot infind",
+        "broker": "iot.ac.uma.es",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]
